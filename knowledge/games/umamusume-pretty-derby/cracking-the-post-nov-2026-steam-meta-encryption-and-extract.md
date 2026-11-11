@@ -118,19 +118,33 @@ and the game stayed up.
    geometric normals anti-align with vertex normals (99% disagree). Emit `(a, c, b)`.
 5. **Z-mirror conversion**: positions (x,y,-z), node quaternions (-x,-y,z,w), bindpose/inverse
    matrices conjugated `F·M·F`, textures flipped vertically with UV `v' = 1-v`.
-6. **Multi-bundle loading in UnityPy**: pass bytes blobs and CAB registration misses bundles;
+6. **glTF MAT4 accessors are COLUMN-major** — writing row-major inverse-bind matrices makes
+   Blender's importer deform every skinned mesh ("stretched" models). Symptom: raw imported
+   vertices differ from the POSITION accessor, rest-pose skinning not identity.
+7. **Verify through Blender headless, not just your own GLB reader**: a self-consistent-but-wrong
+   file passes your reader (same mistake both sides). Blender's glTF importer re-skins vertices
+   at import via `bind_arma_mat @ IBM`; import a GLB, evaluate the armature, and compare against
+   the accessor data (`blender --background --python verify.py`).
+8. **Multi-bundle loading in UnityPy**: pass bytes blobs and CAB registration misses bundles;
    write decrypted bundles to a temp dir and `UnityPy.load(dir)` — cross-CAB refs resolve.
-7. **Reuse of one cursor for outer loop + inner lookups silently truncates the outer loop**
+9. **Reuse of one cursor for outer loop + inner lookups silently truncates the outer loop**
    (apsw) — materialize query results first. Symptom: dependency lists of 1 instead of 7.
-8. **bindpose attribute names are `e00..e33`** in UnityPy 1.24 (`m00` fails silently → empty skin).
-9. **Materials attach to the GameObject's Transform, not to the renderer component** — build a
-   GameObject→Transform map or `transforms[k]` KeyErrors on the SMR's own key.
-10. **Proton prefix mismatch kills direct launches** (exit 53, "invalid version"): use the exact
+10. **bindpose attribute names are `e00..e33`** in UnityPy 1.24 (`m00` fails silently → empty skin);
+    the layout is row-major with translation at `[i][3]` (matches Unity's `MultiplyPoint`).
+11. **Materials attach to the GameObject's Transform, not to the renderer component** — build a
+    GameObject→Transform map (and define the map dict BEFORE the loop that fills it — a
+    NameError there silently cost every bone name; all nodes were "?").
+12. **Unity mesh data can contain identical duplicate submeshes** (double-pass geometry) — dedupe
+    by triangle-list equality or the model double-renders with double vertex counts.
+13. **Body and head prefabs are separate rigs each rooted at the origin** — the game attaches
+    heads to the body's neck at runtime. For a full character, import both and snap the head
+    armature onto the body's same-named bone (shared bone names: Hip, Neck, Thigh_L, ...).
+14. **Proton prefix mismatch kills direct launches** (exit 53, "invalid version"): use the exact
     Proton that created the prefix (check `compatdata/<appid>`), or scan the user's own
     Steam-launched game.
-11. **Il2CppDumper 6.7.46 auto-mode fails on this build** (CodeRegistration not found); not needed
+15. **Il2CppDumper 6.7.46 auto-mode fails on this build** (CodeRegistration not found); not needed
     for this task anyway.
-12. Body diffuse textures need the naming-convention heuristic; do not expect `_MainTex` on body
+16. Body diffuse textures need the naming-convention heuristic; do not expect `_MainTex` on body
     materials — heads have them, bodies don't.
 
 ## Artifacts (this machine, personal use)
