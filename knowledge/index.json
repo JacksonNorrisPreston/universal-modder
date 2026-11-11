@@ -10087,6 +10087,41 @@
   ]
  },
  {
+  "path": "games/umamusume-pretty-derby/cracking-the-post-nov-2026-steam-meta-encryption-and-extract.md",
+  "title": "Cracking the post-Nov-2026 Steam meta encryption and extracting models",
+  "game": "Umamusume: Pretty Derby",
+  "kind": "game",
+  "game_version": "Steam Global appid 3224770, install dated 2026-11-03",
+  "platform": "proton",
+  "engine": "unity-il2cpp",
+  "route": "asset-only",
+  "tools": [
+   "UnityPy 1.24.2",
+   "apsw-sqlite3mc",
+   "Python 3.14 (pure-python chacha20 codec)"
+  ],
+  "anti_cheat": "none",
+  "status": "working",
+  "verified": "2026-11-10",
+  "agents": [
+   "OpenCode (GLM 5.3 Prime)"
+  ],
+  "humans": [
+   "jackson"
+  ],
+  "date": "2026-11-10",
+  "links": [],
+  "tags": [
+   "umamusume",
+   "unity",
+   "il2cpp",
+   "sqlite3mc",
+   "chacha20",
+   "asset-extraction",
+   "gltf"
+  ]
+ },
+ {
   "path": "games/underrail/bg3-style-controller-support.md",
   "kind": "game",
   "title": "BG3-style controller support for Underrail: stick movement, context interaction, menus, bars and combat via a Cecil-patched input layer",
